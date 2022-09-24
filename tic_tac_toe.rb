@@ -1,5 +1,7 @@
 class Player
-@@players = 0
+  attr_reader :name
+
+  @@players = 0
 
   def initialize(name)
     @name = name
@@ -9,10 +11,13 @@ class Player
   def self.players
     @@players
   end
+
 end
 
-class Display
-  @one = '_';@two = '_';@three = '_';@four = '_';@five = '_';@six = '_';@seven = '_';@eight = '_';@nine = '_'
+class Game
+  @one = '_';@two = '_';@three = '_'
+  @four = '_';@five = '_';@six = '_'
+  @seven = '_';@eight = '_';@nine = '_'
 
   def self.start
     puts "\t\tWelcome to Tic-Tac-toe"
@@ -25,6 +30,11 @@ class Display
 
   end
 
+  private
+
+  @player1 = ''
+  @player2 = ''
+
   def self.get_names
     while Player.players < 2
       name = ''
@@ -34,19 +44,34 @@ class Display
         name = gets
       end
       unless name == ''
-        Player.new(name)
-        name = ''
-        puts 'Name have been saved successfully'
+        if @player1 == ''
+          @player1 = Player.new(name)
+        else
+          @player2 = Player.new(name)
+        end
+          name = ''
+          puts 'Name have been saved successfully'
       end
     end
+
+    self.get_input
+
   end
 
-end
+  def self.get_input
+    times = 9
+    p1 = false
 
-class Game
-
-  def self.start
-    Display.start
+    while times > 0
+      if p1 == false
+        print "\n#{@player1.name.chomp} to enter number of square to place a cross: "
+        p1 = !p1
+      else
+        print "\n#{@player2.name.chomp} to enter number of square to place a nought: "
+        p1 = !p1
+      end
+      times -= 1
+    end
   end
 
 end
