@@ -74,19 +74,40 @@ class Game
         print "\n#{@player1.name.chomp} to enter number of square to place a cross: "
         input = gets
         self.update_display(input.chomp,'X')
-        p1 = !p1
+        if @@err == true
+          times += 1
+          @@err = false
+        else
+          p1 = !p1
+        end
 
       else
         print "\n#{@player2.name.chomp} to enter number of square to place a nought: "
         input = gets
         self.update_display(input.chomp,'O')
-        p1 = !p1
+        if @@err == true
+          times += 1
+          @@err = false
+        else
+          p1 = !p1
+        end
       end
       times -= 1
     end
   end
 
+  @@inputs = []
+  @@err = false
+
   def self.update_display(input,turn)
+
+    if @@inputs.include?(input)
+      @@err = true
+      return puts 'Square already used, Try another empty square'
+    end
+
+    @@inputs << input
+
     case input
     when "1"
       @one = turn
@@ -116,7 +137,8 @@ class Game
       @nine = turn
       self.display
     else
-      puts 'Wrong input type please enter a numbet from 1 to 9'
+      @@err = true
+      puts 'Wrong input type please enter a number from 1 to 9'
     end
   end
 
