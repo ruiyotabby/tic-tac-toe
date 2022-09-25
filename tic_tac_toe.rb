@@ -32,7 +32,9 @@ class Game
   }
 
   def self.display
-    puts "\t\tWelcome to Tic-Tac-toe"
+    puts "\t\t|=============================|"
+    puts "\t\t|======== TIC TAC TOE ========|"
+    puts "\t\t|=============================| "
     puts "\t\t\t3  #{@numbers[:seven]}  #{@numbers[:eight]}  #{@numbers[:nine]}"
     puts "\t\t\t2  #{@numbers[:four]}  #{@numbers[:five]}  #{@numbers[:six]}"
     puts "\t\t\t1  #{@numbers[:one]}  #{@numbers[:two]}  #{@numbers[:three]}"
