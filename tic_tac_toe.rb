@@ -11,7 +11,6 @@ class Player
   def self.players
     @@players
   end
-
 end
 
 class Game
@@ -26,15 +25,17 @@ class Game
 
   private
 
-  @one = '_'; @two = '_'; @three = '_'
-  @four = '_'; @five = '_'; @six = '_'
-  @seven = '_'; @eight = '_'; @nine = '_'
+  @numbers = {
+    one: '_', two:'_', three: '_',
+    four: '_', five: '_', six: '_',
+    seven: '_', eight: '_', nine: '_'
+  }
 
   def self.display
     puts "\t\tWelcome to Tic-Tac-toe"
-    puts "\t\t\t3  #{@seven}  #{@eight}  #{@nine}"
-    puts "\t\t\t2  #{@four}  #{@five}  #{@six}"
-    puts "\t\t\t1  #{@one}  #{@two}  #{@three}"
+    puts "\t\t\t3  #{@numbers[:seven]}  #{@numbers[:eight]}  #{@numbers[:nine]}"
+    puts "\t\t\t2  #{@numbers[:four]}  #{@numbers[:five]}  #{@numbers[:six]}"
+    puts "\t\t\t1  #{@numbers[:one]}  #{@numbers[:two]}  #{@numbers[:three]}"
     puts "\t\t\t   1  2  3"
   end
 
@@ -71,7 +72,7 @@ class Game
 
     while times > 0
       if p1 == false
-        print "\n#{@player1.name.chomp} to enter number of square to place a cross: "
+        print "\n\s#{@player1.name.chomp} to enter number of square to place a cross: "
         input = gets
         self.update_display(input.chomp,'X')
         if @@err == true
@@ -80,7 +81,12 @@ class Game
         else
           p1 = !p1
         end
-
+        if times <= 5; self.check_winner(@player1,'X') end
+        if @@winner == true
+          return puts "\n\t\t\t#{@player1.name.chomp} has won"
+        elsif times == 1
+          return puts "\n\t\t\tThere was a tie"
+        end
       else
         print "\n#{@player2.name.chomp} to enter number of square to place a nought: "
         input = gets
@@ -91,8 +97,31 @@ class Game
         else
           p1 = !p1
         end
+        if times <= 5; self.check_winner(@player2,'O') end
+        if @@winner == true
+          return puts "\n\t\t\t#{@player2.name.chomp} has won"
+        elsif times == 1
+          return puts "\n\t\t\tThere was a tie"
+        end
       end
+
+
       times -= 1
+    end
+  end
+
+  @@winner = false
+
+  def self.check_winner(player,turn)
+    if (@numbers[:one] == turn && @numbers[:two] == turn && @numbers[:three] == turn) ||
+      (@numbers[:one] == turn && @numbers[:four] == turn && @numbers[:seven] == turn) ||
+      (@numbers[:seven] == turn && @numbers[:eight] == turn && @numbers[:nine] == turn) ||
+      (@numbers[:nine] == turn && @numbers[:six] == turn && @numbers[:three] == turn) ||
+      (@numbers[:four] == turn && @numbers[:five] == turn && @numbers[:six] == turn) ||
+      (@numbers[:eight] == turn && @numbers[:five] == turn && @numbers[:two] == turn) ||
+      (@numbers[:one] == turn && @numbers[:five] == turn && @numbers[:nine] == turn) ||
+      (@numbers[:seven] == turn && @numbers[:five] == turn && @numbers[:three] == turn)
+      @@winner = true
     end
   end
 
@@ -110,31 +139,31 @@ class Game
 
     case input
     when "1"
-      @one = turn
+      @numbers[:one] = turn
       self.display
     when "2"
-      @two = turn
+      @numbers[:two] = turn
       self.display
     when "3"
-      @three = turn
+      @numbers[:three] = turn
       self.display
     when "4"
-      @four = turn
+      @numbers[:four] = turn
       self.display
     when "5"
-      @five = turn
+      @numbers[:five] = turn
       self.display
     when "6"
-      @six = turn
+      @numbers[:six] = turn
       self.display
     when "7"
-      @seven = turn
+      @numbers[:seven] = turn
       self.display
     when "8"
-      @eight = turn
+      @numbers[:eight] = turn
       self.display
     when "9"
-      @nine = turn
+      @numbers[:nine] = turn
       self.display
     else
       @@err = true
