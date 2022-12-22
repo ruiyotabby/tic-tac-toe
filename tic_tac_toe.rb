@@ -1,19 +1,3 @@
-class Player
-  attr_reader :name, :total
-
-  @@players = 0
-
-  def initialize(name)
-    @name = name
-    @@players += 1
-    @total = @@players
-  end
-
-  def self.players
-    @@players
-  end
-end
-
 class Game
   attr_accessor :numbers, :name
 
@@ -46,7 +30,7 @@ class Game
   end
 
   def get_names
-    while Player.players < 2
+    while @player2.length < 1
       loop do
         puts 'Each player must choose a name'
         print 'Enter a name: '
@@ -55,8 +39,8 @@ class Game
 
         puts 'Failed! Name should be more than 1 character'
       end
-      @player1 == '' ? @player1 = Player.new(name) : @player2 = Player.new(name)
-      @name = ''
+      @player1 == '' ? @player1 = name : @player2 = name
+      # @name = ''
       puts 'Name have been saved successfully'
     end
   end
@@ -67,7 +51,7 @@ class Game
 
     while times > 0
       if p1 == false
-        print "\n\s#{@player1.name} to enter number of square to place a cross: "
+        print "\n\s#{@player1} to enter number of square to place a cross: "
         input = gets.chomp
         update_display(input, 'X')
         if @err == true
@@ -78,12 +62,12 @@ class Game
         end
         if times <= 5; check_winner('X') end
         if @winner == true
-          return puts "\n\t\t\t#{@player1.name} has won"
+          return puts "\n\t\t\t#{@player1} has won"
         elsif times == 1
           return puts "\n\t\t\tThere was a tie"
         end
       else
-        print "\n#{@player2.name} to enter number of square to place a nought: "
+        print "\n#{@player2} to enter number of square to place a nought: "
         input = gets
         update_display(input,'O')
         if @err == true
@@ -94,7 +78,7 @@ class Game
         end
         if times <= 5; check_winner('O') end
         if @winner == true
-          return puts "\n\t\t\t#{@player2.name} has won"
+          return puts "\n\t\t\t#{@player2} has won"
         elsif times == 1
           return puts "\n\t\t\tThere was a tie"
         end
@@ -159,5 +143,5 @@ class Game
   end
 end
 
-# j = Game.new
-# j.get_names
+j = Game.new
+j.get_names
