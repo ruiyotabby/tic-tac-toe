@@ -47,16 +47,17 @@ class Game
 
   def get_names
     while Player.players < 2
-      while name.length <= 2
+      loop do
         puts 'Each player must choose a name'
         print 'Enter a name: '
         @name = gets.chomp
+        break if name.length > 1
+
+        puts 'Failed! Name should be more than 1 character'
       end
-      unless name == ''
-        @player1 == '' ? @player1 = Player.new(name) : @player2 = Player.new(name)
-        name = ''
-        puts 'Name have been saved successfully'
-      end
+      @player1 == '' ? @player1 = Player.new(name) : @player2 = Player.new(name)
+      @name = ''
+      puts 'Name have been saved successfully'
     end
   end
 
@@ -159,4 +160,4 @@ class Game
 end
 
 # j = Game.new
-# j.start
+# j.get_names
