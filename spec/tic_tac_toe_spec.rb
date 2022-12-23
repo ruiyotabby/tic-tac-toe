@@ -15,7 +15,6 @@ describe Game do
         expect(name).to eq 'joe'
       end
     end
-
     context 'should verify the user input' do
       subject(:game_length) { described_class.new }
       context 'when user inputs a character less than 2 twice' do
@@ -98,5 +97,21 @@ describe Game do
       end
     end
   end
-  describe '#'
+  describe '#get_input' do
+    describe '#update_display' do
+      subject(:game_update) { described_class.new }
+      context 'when I repeat the same number twice' do
+        it 'return an error' do
+          allow(game_update).to receive(:puts)
+          allow(game_update).to receive(:display)
+          input = [['1', 'X'], ['2', 'O'], ['1', 'X']]
+          error_message = 'Square already used, Try another empty square'
+          input.each do |key|
+            expect(game_update).to receive(:puts).with(error_message)
+            game_update.update_display(key[0], key[1])
+          end
+        end
+      end
+    end
+  end
 end
