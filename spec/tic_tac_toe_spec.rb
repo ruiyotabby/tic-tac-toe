@@ -35,6 +35,7 @@ describe Game do
       context 'when a user inputs a character less than 2 once' do
         before do
           allow(game_length).to receive(:puts)
+          allow(game_length).to receive(:print)
           invalid_input = 'a'
           valid_input = 'abdi'
           allow(game_length).to receive(:gets).and_return(invalid_input, valid_input, valid_input)
@@ -49,6 +50,7 @@ describe Game do
       context 'when a user inputs a character less than two first then a valid input then an invalid input' do
         before do
           allow(game_length).to receive(:puts)
+          allow(game_length).to receive(:print)
           invalid_input = 'm'
           valid_input = 'mula'
           allow(game_length).to receive(:gets).and_return(invalid_input, valid_input, invalid_input, valid_input)
@@ -61,7 +63,7 @@ describe Game do
       end
       context 'when a user input character more than 1' do
         before do
-          allow(game_length).to receive(:puts)
+          allow(game_length).to receive(:print)
           valid_input = 'kipchge'
           allow(game_length).to receive(:gets).and_return(valid_input, valid_input)
         end
@@ -97,21 +99,73 @@ describe Game do
       end
     end
   end
-  describe '#get_input' do
-    describe '#update_display' do
-      subject(:game_update) { described_class.new }
-      context 'when I repeat the same number twice' do
-        it 'return an error' do
-          allow(game_update).to receive(:puts)
-          allow(game_update).to receive(:display)
-          input = [['1', 'X'], ['2', 'O'], ['1', 'X']]
-          error_message = 'Square already used, Try another empty square'
-          input.each do |key|
-            expect(game_update).to receive(:puts).with(error_message)
-            game_update.update_display(key[0], key[1])
-          end
-        end
+
+  describe '#update_display' do
+    subject(:game_update) { described_class.new }
+    context 'when user enters correct input' do
+      it 'should call #display' do
+        expect(game_update).to receive(:display).twice
+        game_update.update_display('1', 'X')
+        game_update.update_display('2', 'O')
+      end
+      it '@inputs should increase by 1' do
+        allow(game_update).to receive(:puts)
+        inputs = game_update.instance_variable_get(:@inputs)
+        expect { game_update.update_display('1', 'X') }.to change { inputs.length }.by 1
+      end
+    end
+    context 'when user repeat the same number' do
+      it 'returns Square already used' do
+        allow(game_update).to receive(:display)
+        error_message = 'Square already used, Try another empty square'
+        expect(game_update).to receive(:puts).with(error_message).exactly(1).time
+        game_update.update_display('1', 'X')
+        game_update.update_display('1', 'O')
+      end
+      it 'changes @err to true' do
+        allow(game_update).to receive(:puts)
+        game_update.update_display('1', 'X')
+        game_update.update_display('1', 'O')
+        err = game_update.instance_variable_get(:@err)
+        expect(err).to be true
+      end
+    end
+    context 'when a user enters wrong input' do
+      it '@err switches to true' do
+        allow(game_update).to receive(:puts)
+        game_update.update_display('!', 'X')
+        err = game_update.instance_variable_get(:@err)
+        expect(err).to be true
+      end
+    end
+    context 'when a user enters a letter instead of a number' do
+      it 'returns wrong input' do
+        error_message = 'Wrong input type please enter a number from 1 to 9'
+        expect(game_update).to receive(:puts).with error_message
+        game_update.update_display('k', 'X')
+      end
+      it '@err switches to true' do
+        allow(game_update).to receive(:puts)
+        game_update.update_display('h', 'X')
+        err = game_update.instance_variable_get(:@err)
+        expect(err).to be true
+      end
+    end
+    context 'when a user enter a number > 9' do
+      it 'returns wrong input' do
+        error_message = 'Wrong input type please enter a number from 1 to 9'
+        expect(game_update).to receive(:puts).with error_message
+        game_update.update_display('10', 'X')
+      end
+    end
+    context 'when a user enter number < 1' do
+      it 'returns wrong input' do
+        error_message = 'Wrong input type please enter a number from 1 to 9'
+        expect(game_update).to receive(:puts).with error_message
+        game_update.update_display('-2', 'X')
       end
     end
   end
+
+  
 end
