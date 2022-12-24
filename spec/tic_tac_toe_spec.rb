@@ -167,5 +167,58 @@ describe Game do
     end
   end
 
-  
+  describe '#player_turn' do
+    subject(:game_turn) { described_class.new }
+    context 'when its @player1 turn' do
+      before do
+        allow(game_turn).to receive(:print)
+        allow(game_turn).to receive(:puts)
+        allow(game_turn).to receive(:update_display)
+        allow(game_turn).to receive(:gets).and_return('p1', 'p2', 'nothing')
+        game_turn.get_names
+      end
+      it 'returns correct output' do
+        player1 = game_turn.instance_variable_get(:@player1)
+        message = "\n#{player1} to enter number of square to place a cross: "
+        expect(game_turn).to receive(:print).with(message).once
+        game_turn.player_turn(player1, 'X')
+      end
+    end
+    context 'when its @player2 turn' do
+      before do
+        allow(game_turn).to receive(:print)
+        allow(game_turn).to receive(:puts)
+        allow(game_turn).to receive(:update_display)
+        allow(game_turn).to receive(:gets).and_return('p1', 'p2', 'nothing')
+        game_turn.get_names
+      end
+      it 'returns correct output' do
+        player2 = game_turn.instance_variable_get(:@player2)
+        message = "\n#{player2} to enter number of square to place a nought: "
+        expect(game_turn).to receive(:print).with(message).once
+        game_turn.player_turn(player2, 'O')
+      end
+    end
+    context 'when @err == true' do
+      before do
+        allow(game_turn).to receive(:print)
+        allow(game_turn).to receive(:puts)
+        allow(game_turn).to receive(:gets).and_return('p1', 'p2', 'l', '1')
+        game_turn.get_names
+      end
+      it 'repeats the loop' do
+        player1 = game_turn.instance_variable_get(:@player1)
+        message = "\n#{player1} to enter number of square to place a cross: "
+        expect(game_turn).to receive(:print).with(message).twice
+        game_turn.player_turn(player1, 'X')
+      end
+      it 'change @err to false' do
+        player1 = game_turn.instance_variable_get(:@player1)
+        err = game_turn.instance_variable_get(:@err)
+        expect(err).to be false
+        game_turn.player_turn(player1, 'X')
+      end
+    end
+  end
+
 end
