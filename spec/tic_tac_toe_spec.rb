@@ -286,5 +286,13 @@ describe Game do
         game_input.get_input
       end
     end
+    context 'when there is no winner' do
+      it 'outputs the tie message' do
+        message = "\n\t\t\tThere was a tie"
+        allow(game_input).to receive(:gets).and_return('1', '4', '2', '3', '5', '9', '6', '8', '7')
+        expect(game_input).to receive(:puts).with message
+        game_input.get_input
+      end
+    end
   end
 end
