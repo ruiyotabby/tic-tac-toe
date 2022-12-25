@@ -51,9 +51,8 @@ class Game
 
       return winner(@player2) if player_turn(@player2, 'O')
 
+      times -= 2
       return puts "\n\t\t\tThere was a tie" if times == 1
-
-      times -= 1
     end
   end
 
