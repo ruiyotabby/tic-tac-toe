@@ -40,64 +40,57 @@ class Game
         puts 'Failed! Name should be more than 1 character'
       end
       @player1 == '' ? @player1 = name : @player2 = name
-      # @name = ''
       puts 'Name have been saved successfully'
     end
   end
 
   def get_input
     times = 9
-    p1 = false
+    while times.positive?
+      return winner(@player1) if player_turn(@player1, 'X')
 
-    while times > 0
-      if p1 == false
-        print "\n\s#{@player1} to enter number of square to place a cross: "
-        input = gets.chomp
-        update_display(input, 'X')
-        if @err == true
-          times += 1
-          @err = false
-        else
-          p1 = !p1
-        end
-        if times <= 5; check_winner('X') end
-        if @winner == true
-          return puts "\n\t\t\t#{@player1} has won"
-        elsif times == 1
-          return puts "\n\t\t\tThere was a tie"
-        end
-      else
-        print "\n#{@player2} to enter number of square to place a nought: "
-        input = gets
-        update_display(input,'O')
-        if @err == true
-          times += 1
-          @err = false
-        else
-          p1 = !p1
-        end
-        if times <= 5; check_winner('O') end
-        if @winner == true
-          return puts "\n\t\t\t#{@player2} has won"
-        elsif times == 1
-          return puts "\n\t\t\tThere was a tie"
-        end
-      end
+      return winner(@player2) if player_turn(@player2, 'O')
+
+      return puts "\n\t\t\tThere was a tie" if times == 1
+
       times -= 1
     end
   end
 
-  def check_winner(turn)
-    if (@numbers[:one] == turn && @numbers[:two] == turn && @numbers[:three] == turn) ||
-      (@numbers[:one] == turn && @numbers[:four] == turn && @numbers[:seven] == turn) ||
-      (@numbers[:seven] == turn && @numbers[:eight] == turn && @numbers[:nine] == turn) ||
-      (@numbers[:nine] == turn && @numbers[:six] == turn && @numbers[:three] == turn) ||
-      (@numbers[:four] == turn && @numbers[:five] == turn && @numbers[:six] == turn) ||
-      (@numbers[:eight] == turn && @numbers[:five] == turn && @numbers[:two] == turn) ||
-      (@numbers[:one] == turn && @numbers[:five] == turn && @numbers[:nine] == turn) ||
-      (@numbers[:seven] == turn && @numbers[:five] == turn && @numbers[:three] == turn)
-      @@winner = true
+  def player_turn(player, turn)
+    player1 = "\n#{@player1} to enter number of square to place a cross: "
+    player2 = "\n#{@player2} to enter number of square to place a nought: "
+    loop do
+      print player == @player1 ? player1 : player2
+      input = gets.chomp
+      update_display(input, turn)
+      if @err == true
+        @err = false
+        redo
+      end
+      return game_over?(turn)
     end
+  end
+
+  def game_over?(turn)
+    winning_combination = [
+      [@numbers[:one], @numbers[:two], @numbers[:three]],
+      [@numbers[:one], @numbers[:four], @numbers[:seven]],
+      [@numbers[:seven], @numbers[:eight], @numbers[:nine]],
+      [@numbers[:nine], @numbers[:six], @numbers[:three]],
+      [@numbers[:four], @numbers[:five], @numbers[:six]],
+      [@numbers[:eight], @numbers[:five], @numbers[:two]],
+      [@numbers[:one], @numbers[:five], @numbers[:nine]],
+      [@numbers[:seven], @numbers[:five], @numbers[:three]]
+    ]
+
+    winning_combination.each { |i| return true if i.all?(turn) }
+
+    return false
+  end
+
+  def winner(player)
+    puts "\n\t\t\t#{player} has won"
   end
 
   def update_display(input, turn)
@@ -106,42 +99,24 @@ class Game
       return puts 'Square already used, Try another empty square'
     end
 
-    @inputs << input
+    possible_inputs = [
+      ['1', :one], ['2', :two], ['3', :three],
+      ['4', :four], ['5', :five], ['6', :six],
+      ['7', :seven], ['8', :eight], ['9', :nine]
+    ]
 
-    case input
-    when "1"
-      @numbers[:one] = turn
-      display
-    when "2"
-      @numbers[:two] = turn
-      display
-    when "3"
-      @numbers[:three] = turn
-      display
-    when "4"
-      @numbers[:four] = turn
-      display
-    when "5"
-      @numbers[:five] = turn
-      display
-    when "6"
-      @numbers[:six] = turn
-      display
-    when "7"
-      @numbers[:seven] = turn
-      display
-    when "8"
-      @numbers[:eight] = turn
-      display
-    when "9"
-      @numbers[:nine] = turn
-      display
-    else
-      @err = true
-      puts 'Wrong input type please enter a number from 1 to 9'
+    possible_inputs.each do |i|
+      next unless input == i[0]
+
+      @inputs << input
+      @numbers[i[1]] = turn
+      return display
     end
+
+    @err = true
+    puts 'Wrong input type please enter a number from 1 to 9'
   end
 end
 
-j = Game.new
-j.get_names
+# j = Game.new
+# j.start
