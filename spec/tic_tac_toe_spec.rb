@@ -169,15 +169,15 @@ describe Game do
 
   describe '#player_turn' do
     subject(:game_turn) { described_class.new }
+    before do
+      allow(game_turn).to receive(:print)
+      allow(game_turn).to receive(:puts)
+    end
     context 'when its @player1 turn' do
-      before do
-        allow(game_turn).to receive(:print)
-        allow(game_turn).to receive(:puts)
+      it 'returns correct output' do
         allow(game_turn).to receive(:update_display)
         allow(game_turn).to receive(:gets).and_return('p1', 'p2', 'nothing')
         game_turn.get_names
-      end
-      it 'returns correct output' do
         player1 = game_turn.instance_variable_get(:@player1)
         message = "\n#{player1} to enter number of square to place a cross: "
         expect(game_turn).to receive(:print).with(message).once
@@ -185,14 +185,10 @@ describe Game do
       end
     end
     context 'when its @player2 turn' do
-      before do
-        allow(game_turn).to receive(:print)
-        allow(game_turn).to receive(:puts)
+      it 'returns correct output' do
         allow(game_turn).to receive(:update_display)
         allow(game_turn).to receive(:gets).and_return('p1', 'p2', 'nothing')
         game_turn.get_names
-      end
-      it 'returns correct output' do
         player2 = game_turn.instance_variable_get(:@player2)
         message = "\n#{player2} to enter number of square to place a nought: "
         expect(game_turn).to receive(:print).with(message).once
@@ -201,8 +197,6 @@ describe Game do
     end
     context 'when @err == true' do
       before do
-        allow(game_turn).to receive(:print)
-        allow(game_turn).to receive(:puts)
         allow(game_turn).to receive(:gets).and_return('p1', 'p2', 'l', '1')
         game_turn.get_names
       end
@@ -221,4 +215,76 @@ describe Game do
     end
   end
 
+  describe '#get_input' do
+    subject(:game_input) { described_class.new }
+    before do
+      allow(game_input).to receive(:print)
+      allow(game_input).to receive(:puts)
+      allow(game_input).to receive(:display)
+      allow(game_input).to receive(:gets).and_return('p1', 'p2')
+      game_input.get_names
+    end
+
+    let(:player1) { game_input.instance_variable_get(:@player1) }
+    let(:player2) { game_input.instance_variable_get(:@player2) }
+    let(:message1) { "\n\t\t\t#{player1} has won" }
+    let(:message2) { "\n\t\t\t#{player2} has won" }
+
+    context 'when @player1 has entered [1,2,3]' do
+      it 'returns winning message' do
+        allow(game_input).to receive(:gets).and_return('1', '4', '2', '5', '3')
+        expect(game_input).to receive(:puts).with(message1)
+        game_input.get_input
+      end
+    end
+    context 'when @player2 has entered [1,4,7]' do
+      it 'returns winner message' do
+        allow(game_input).to receive(:gets).and_return('2', '1', '3', '4', '5', '7')
+        expect(game_input).to receive(:puts).with message2
+        game_input.get_input
+      end
+    end
+    context 'when @player1 has entered [7,8,9]' do
+      it 'returns winner message' do
+        allow(game_input).to receive(:gets).and_return('7', '4', '8', '5', '9', '6')
+        expect(game_input).to receive(:puts).with message1
+        game_input.get_input
+      end
+    end
+    context 'when @player2 has entered [4,5,6]' do
+      it 'outputs winning message' do
+        allow(game_input).to receive(:gets).and_return('7', '4', '8', '5', '1', '6')
+        expect(game_input).to receive(:puts).with message2
+        game_input.get_input
+      end
+    end
+    context 'when @player1 has entered [9,6,3]' do
+      it 'outputs winner message' do
+        allow(game_input).to receive(:gets).and_return('9', '8', '6', '5', '3', '2')
+        expect(game_input).to receive(:puts).with message1
+        game_input.get_input
+      end
+    end
+    context 'when @player2 has entered [8,5,2]' do
+      it 'outputs winner message' do
+        allow(game_input).to receive(:gets).and_return('9', '8', '6', '5', '7', '2')
+        expect(game_input).to receive(:puts).with message2
+        game_input.get_input
+      end
+    end
+    context 'when @player1 has entered [1,5,9]' do
+      it 'outputs winner message' do
+        allow(game_input).to receive(:gets).and_return('1', '8', '5', '4', '9', '2')
+        expect(game_input).to receive(:puts).with message1
+        game_input.get_input
+      end
+    end
+    context 'when @player2 has entered [7,5,3]' do
+      it 'outputs winner message' do
+        allow(game_input).to receive(:gets).and_return('9', '7', '6', '5', '1', '3')
+        expect(game_input).to receive(:puts).with message2
+        game_input.get_input
+      end
+    end
+  end
 end
