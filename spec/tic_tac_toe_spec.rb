@@ -7,12 +7,16 @@ describe Game do
       before do
         allow(game_names).to receive(:puts)
         allow(game_names).to receive(:print)
-        allow(game_names).to receive(:gets).and_return('james', 'joe')
+        allow(game_names).to receive(:gets).and_return('joe')
       end
       it 'saves in name instance variable' do
         game_names.get_names
         name = game_names.instance_variable_get(:@name)
         expect(name).to eq 'joe'
+      end
+      it 'informs the user that name has been saved' do
+        expect(game_names).to receive(:puts).with('Name have been saved successfully')
+        game_names.get_names
       end
     end
     context 'should verify the user input' do
